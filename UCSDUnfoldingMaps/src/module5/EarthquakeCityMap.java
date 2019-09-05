@@ -20,7 +20,7 @@ import processing.core.PApplet;
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
  * Author: UC San Diego Intermediate Software Development MOOC team
- * @author Your name here
+ * @author Aditya Singh
  * Date: July 17, 2015
  * */
 public class EarthquakeCityMap extends PApplet {
@@ -145,9 +145,71 @@ public class EarthquakeCityMap extends PApplet {
 	// 
 	private void selectMarkerIfHover(List<Marker> markers)
 	{
-		// TODO: Implement this method
+		if (lastSelected != null) {
+			return;
+		}
+
+		for (Marker marker : markers) {
+			CommonMarker commonMarker = (CommonMarker) marker;
+			if (commonMarker.isInside(map, mouseX, mouseY)) {
+				lastSelected = commonMarker;
+				commonMarker.setSelected(true);
+				return;
+			}
+		}// TODO: Implement this method
 	}
-	
+	private void checkIfCitiesAreClicked() {
+		if (lastClicked != null) {
+			return;
+		}
+
+		for (Marker marker : cityMarkers) {
+			if (!marker.isHidden() && marker.isInside(map, mouseX, mouseY)) {
+				lastClicked = (CommonMarker) marker;
+
+				for (Marker markerHide : cityMarkers) {
+					if (markerHide != lastClicked) {
+						markerHide.setHidden(true);
+					}
+				}
+
+				for (Marker markerHide : quakeMarkers) {
+					EarthquakeMarker earthquakeMarker = (EarthquakeMarker) markerHide;
+					if (earthquakeMarker.getDistanceTo(marker.getLocation()) > earthquakeMarker.threatCircle()) {
+						earthquakeMarker.setHidden(true);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void checkIfEarthquakeIsClicked() {
+		if (lastClicked != null) {
+			return;
+		}
+
+		for (Marker marker : cityMarkers) {
+			if (!marker.isHidden() && marker.isInside(map, mouseX, mouseY)) {
+				lastClicked = (CommonMarker) marker;
+
+				for (Marker markerHide : cityMarkers) {
+					if (markerHide != lastClicked) {
+						markerHide.setHidden(true);
+					}
+				}
+
+				for (Marker markerHide : quakeMarkers) {
+					EarthquakeMarker earthquakeMarker = (EarthquakeMarker) markerHide;
+					if (earthquakeMarker.getDistanceTo(marker.getLocation()) > earthquakeMarker.threatCircle()) {
+						earthquakeMarker.setHidden(true);
+					}
+				}
+			}
+		}
+	}
 	/** The event handler for mouse clicks
 	 * It will display an earthquake and its threat circle of cities
 	 * Or if a city is clicked, it will display all the earthquakes 
@@ -156,7 +218,15 @@ public class EarthquakeCityMap extends PApplet {
 	@Override
 	public void mouseClicked()
 	{
-		// TODO: Implement this method
+		if (lastClicked != null) {
+			unhideMarkers();
+			lastClicked = null;
+		} else if (lastClicked == null) {
+			checkIfEarthquakeIsClicked();
+			if (lastClicked == null) {
+				checkIfCitiesAreClicked();
+			}
+		}// TODO: Implement this method
 		// Hint: You probably want a helper method or two to keep this code
 		// from getting too long/disorganized
 	}

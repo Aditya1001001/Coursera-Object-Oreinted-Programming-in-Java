@@ -51,7 +51,21 @@ public class CityMarker extends CommonMarker {
 	public void showTitle(PGraphics pg, float x, float y)
 	{
 		
-		// TODO: Implement this method
+		String name = getCity() + " " + getCountry() + " ";
+		String population = "Pop: " + getPopulation() + " Million";
+
+		pg.pushStyle();
+
+		pg.fill(255, 255, 255);
+		pg.textSize(12);
+		pg.rectMode(PConstants.CORNER);
+		pg.rect(x, y - TRI_SIZE - 39, Math.max(pg.textWidth(name), pg.textWidth(population)) + 6, 39);
+		pg.fill(0, 0, 0);
+		pg.textAlign(PConstants.LEFT, PConstants.TOP);
+		pg.text(name, x + 3, y - TRI_SIZE - 33);
+		pg.text(population, x + 3, y - TRI_SIZE - 18);
+
+		pg.popStyle();// TODO: Implement this method
 	}
 	
 	
